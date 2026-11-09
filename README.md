@@ -4,7 +4,7 @@ A self-hosted LiteLLM proxy with PostgreSQL and Redis. Railway hosts the service
 
 ## Configuration
 
-The Dockerfile pins LiteLLM v1.108.3-stable. `config.yaml` exposes `chat` (OpenAI gpt-4o-mini) and `backup` (OpenAI gpt-4.1-mini), with a configured model fallback. This example changes models on fallback; test both against your application requirements. It is not independent-provider redundancy.
+The Dockerfile pins LiteLLM v1.108.3. `config.yaml` exposes `chat` (OpenAI gpt-4o-mini) and `backup` (OpenAI gpt-4.1-mini), with a configured model fallback. This example changes models on fallback; test both against your application requirements. It is not independent-provider redundancy.
 
 Supply `OPENAI_API_KEY`, a strong `LITELLM_MASTER_KEY` beginning with `sk-`, and a permanent random `LITELLM_SALT_KEY`. Never commit these values. Do not rotate the salt casually: it protects stored credentials. The IaC definition references PostgreSQL and Redis variables rather than copying their credentials.
 

@@ -1,4 +1,4 @@
-FROM ghcr.io/berriai/litellm:v1.108.3-stable
+FROM ghcr.io/berriai/litellm:v1.108.3
 WORKDIR /app
 COPY config.yaml /app/config.yaml
 EXPOSE 4000
