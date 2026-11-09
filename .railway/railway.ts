@@ -1,4 +1,4 @@
-import { defineRailway, github, postgres, project, redis, service } from "railway/iac";
+import { defineRailway, github, postgres, preserve, project, redis, service } from "railway/iac";
 
 export default defineRailway(() => {
   const db = postgres("postgres");
@@ -15,6 +15,9 @@ export default defineRailway(() => {
       REDIS_PORT: cache.env.REDISPORT,
       REDIS_PASSWORD: cache.env.REDISPASSWORD,
       STORE_MODEL_IN_DB: "True",
+      OPENAI_API_KEY: preserve(),
+      LITELLM_MASTER_KEY: preserve(),
+      LITELLM_SALT_KEY: preserve(),
     },
   });
   return project("railway-litellm-gateway", { resources: [db, cache, gateway] });

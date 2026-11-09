@@ -19,6 +19,7 @@ def request(path, payload=None, key=None):
     )
     try:
         with urllib.request.urlopen(req, timeout=90) as response:
+            request.last_headers = dict(response.headers)
             return response.status, json.load(response)
     except urllib.error.HTTPError as error:
         return error.code, {}
@@ -36,12 +37,20 @@ assert status == 200 and created.get("key"), ("virtual key generation", status)
 app_key = created["key"]
 print("PASS restricted application key created")
 try:
+    if os.environ.get("EXPECT_FALLBACK") == "1":
+        status, info = request("/model/info", key=master)
+        assert status == 200, ("model info", status)
+        backup_id = next(str(m["model_info"]["id"]) for m in info["data"] if m["model_name"] == "backup")
     status, response = request("/v1/chat/completions", {
         "model": os.environ.get("TEST_MODEL", "chat"),
         "messages": [{"role": "user", "content": "Reply with exactly: gateway works"}],
         "max_tokens": 16,
     }, app_key)
     assert status == 200 and response.get("choices"), ("completion", status)
+    if os.environ.get("EXPECT_FALLBACK") == "1":
+        headers = {k.lower(): v for k, v in request.last_headers.items()}
+        assert headers.get("x-litellm-model-id") == backup_id, "Expected backup model ID in response headers"
+        print("PASS configured backup model served the request")
     print("PASS inference:", response["model"], json.dumps(response["choices"][0]["message"]["content"]))
     print("Usage:", json.dumps(response.get("usage", {})))
 finally:
