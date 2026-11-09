@@ -9,6 +9,7 @@ export default defineRailway(() => {
     healthcheckTimeout: 300,
     env: {
       PORT: "4000",
+      PRIMARY_API_BASE: "https://api.openai.com/v1",
       DATABASE_URL: db.env.DATABASE_URL,
       REDIS_HOST: cache.env.REDISHOST,
       REDIS_PORT: cache.env.REDISPORT,

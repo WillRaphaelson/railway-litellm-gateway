@@ -3,6 +3,7 @@ model_list:
     litellm_params:
       model: openai/gpt-4o-mini
       api_key: os.environ/OPENAI_API_KEY
+      api_base: os.environ/PRIMARY_API_BASE
   - model_name: backup
     litellm_params:
       model: openai/gpt-4.1-mini
