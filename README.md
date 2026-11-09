@@ -18,4 +18,8 @@ Use the master key only for administration. Create an application virtual key re
 
 This is a starting stack, not a highly available database architecture. Configure backups and restoration, continuous monitoring, resource capacity, log retention, and access policies before serving production traffic. Redis shares routing state; response caching is not enabled by this example. Adding proxy replicas does not make PostgreSQL highly available.
 
-Deployment test observations and template URL will be recorded after verification.
+[Deploy the LiteLLM gateway stack on Railway](https://railway.com/deploy/railway-litellm-gateway-guide). The template creates the three services, generates gateway/database secrets, and requires your OpenAI API key. `PRIMARY_API_BASE` defaults to `https://api.openai.com/v1`.
+
+Verified November 9, 2026 on the dedicated project and a fresh published-template deployment: database-aware readiness, unauthenticated model access rejection, restricted virtual-key creation, real inference, and temporary-key revocation. A controlled invalid primary API path on the dedicated project returned a real completion from the configured backup model, verified by its model ID in response headers. Both models use OpenAI; this is not a cross-provider outage test. No load or cost benchmark was performed.
+
+Run `smoke.py` with `GATEWAY_URL` and `LITELLM_MASTER_KEY` set in your environment. It makes one small billable inference request. `EXPECT_FALLBACK=1` additionally asserts the backup model ID; use that only after deliberately breaking the primary route in a non-production project. Restore the primary endpoint afterward. Never print or commit the master key.
